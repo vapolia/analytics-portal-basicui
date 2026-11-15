@@ -1,6 +1,6 @@
 /* vapolia/analytics-portal-basicui : rendu commun des panneaux des tableaux de bord Vapolia Analytics. Aucune couleur, aucun nom ni aucun seuil de projet dans ce code.
-   Charte du projet : le panneau déclare la lecture { "id": "charte", "table": "charte" }. La bibliothèque lit d.charte[0] à chaque
-   onData, sans appel du panneau. Sans cette lecture, ou pour une colonne absente, la valeur par défaut s'applique.
+   Charte du projet : le portail envoie la table charte du projet à chaque panneau, sous d.charte. La bibliothèque lit d.charte[0]
+   à chaque onData, sans appel du panneau. Sans table charte, ou pour une colonne absente, la valeur par défaut s'applique.
    Colonnes de la table charte, une seule ligne, toutes facultatives. Une couleur a une variante <colonne>_dark pour le thème
    sombre. Sans variante, la couleur claire sert aux deux thèmes.
      name                         nom de l'app, cité par va.recos

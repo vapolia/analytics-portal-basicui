@@ -5,10 +5,24 @@ recommandations. Ce README s'adresse à l'agent ou à la personne qui écrit un 
 
 ## Summary
 
-1. Un panneau nomme `vapolia/analytics-portal-basicui@v1` dans `render.libs` et appelle les fonctions de `window.va`.
-2. La bibliothèque ne contient aucune couleur ni aucun seuil de projet. Elle lit la table `charte` du projet, que le panneau déclare
-   dans ses lectures.
-3. Une version est un tag git. `v1` suit la dernière version compatible, `v1.2.0` désigne une version précise.
+1. Un gestionnaire importe `vapolia/analytics-portal-basicui@v1` dans son projet, depuis le portail ou par son agent.
+2. Un panneau nomme `analytics-portal-basicui` dans `render.libs` et appelle les fonctions de `window.va`.
+3. La bibliothèque ne contient aucune couleur ni aucun seuil de projet. Elle lit la table `charte` du projet, que le portail envoie
+   à chaque panneau.
+4. Une version est un tag git. `v1` suit la dernière version compatible, `v1.2.0` désigne une version précise. Un projet reste sur
+   le commit qu'il a importé jusqu'à sa prochaine mise à jour.
+
+## Importer la bibliothèque dans un projet
+
+Le projet garde une copie en lecture seule, figée sur le commit de la référence au moment de l'import.
+
+| Depuis | Import | Mise à jour |
+|---|---|---|
+| Le portail | Paramètres du projet, « Ajouter une bibliothèque externe », avec `vapolia/analytics-portal-basicui@v1`. | Bouton « Mettre à jour » de la bibliothèque. |
+| Un agent | `import_lib(project, "vapolia/analytics-portal-basicui@v1")` | `import_lib` avec `check: true` dit si la référence a avancé, puis `import_lib` sans `check` met à jour. |
+
+Une mise à jour s'applique aussitôt à tous les panneaux du projet qui nomment la bibliothèque. Un gestionnaire revient à la copie
+précédente dans les paramètres du projet, pendant 15 jours.
 
 ## Utiliser la bibliothèque dans un panneau
 
@@ -16,17 +30,17 @@ recommandations. Ce README s'adresse à l'agent ou à la personne qui écrit un 
 {
   "title": "Actifs par semaine",
   "data": [
-    { "id": "charte", "table": "charte" },
     { "id": "actives", "view": "weekly_active" }
   ],
   "render": {
-    "libs": ["vapolia/analytics-portal-basicui@v1"],
+    "libs": ["analytics-portal-basicui"],
     "html": "<div id=\"c\"></div><script>dashboard.onData(d => va.chart(document.getElementById('c'), d, va.series(d.actives, 'week', [['actives', 'Actifs']]), 'line', { period: 'week' }))</script>"
   }
 }
 ```
 
-- La lecture de la charte porte l'id `charte`. La bibliothèque lit `d.charte[0]` à chaque `onData`, sans appel du panneau.
+- Le portail envoie la table `charte` du projet à chaque panneau, sous `d.charte`. La bibliothèque la lit à chaque `onData`, sans
+  appel ni lecture à déclarer dans le panneau.
 - Chaque fonction de rendu prend l'élément cible, puis `d`, l'objet reçu par `onData`. Elle redessine tout à chaque appel.
 - La bibliothèque ne dépend d'aucune autre.
 
@@ -73,7 +87,7 @@ Exemple :
 
 ## Versions
 
-| Référence | Désigne |
+| Référence à l'import | Désigne |
 |---|---|
 | `vapolia/analytics-portal-basicui@v1` | La dernière version compatible. Le tag `v1` est déplacé à chaque version 1.x. |
 | `vapolia/analytics-portal-basicui@v1.2.0` | Cette version. |
