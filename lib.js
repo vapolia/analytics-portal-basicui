@@ -462,17 +462,19 @@
   /* Boutons de sélection au-dessus d'un contenu. Renvoie l'élément où dessiner le contenu. */
   function tabs(el, d, names, sel, onSel) {
     var c = colors(d), ac = th(d, CFG.accent), on = ac.bg, onTx = ac.tx;
-    if (!el._vaTabs) {
+    /* Les deux conteneurs sont recréés s'ils ont disparu, par exemple après un va.empty(el) sur le même élément. */
+    var tb = el.querySelector(':scope > .tb'), tc = el.querySelector(':scope > .tc');
+    if (!tb || !tc) {
       el.innerHTML = '<div class="tb"></div><div class="tc"></div>';
-      el._vaTabs = true;
+      tb = el.firstChild;
+      tc = el.lastChild;
     }
-    var tb = el.querySelector('.tb');
     tb.innerHTML = arr(names).map(function (n, i) {
       var s = i === sel;
       return '<button data-t="' + i + '" style="border:1px solid ' + (s ? on : c.gr) + ';background:' + (s ? on : 'transparent') + ';color:' + (s ? onTx : c.fg) + ';font-weight:' + (s ? 600 : 400) + '">' + esc(n) + '</button>';
     }).join('');
     tb.querySelectorAll('button').forEach(function (b) { b.addEventListener('click', function () { onSel(+b.dataset.t); }); });
-    return el.querySelector('.tc');
+    return tc;
   }
 
   function periodCols(rows, key, period, fmt, n) {
